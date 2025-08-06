@@ -1,0 +1,59 @@
+services:
+  nginx:
+    container_name: epignosis-nginx
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ../code:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+    networks:
+      - epignosis-network
+
+  php:
+    container_name: epignosis-php
+    build: ./php
+    volumes:
+      - ../code:/var/www/html
+    networks:
+      - epignosis-network
+
+  mysql:
+    container_name: epignosis-mysql
+    image: mysql:8.1
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: epignosis
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - epignosis-network
+
+  phpmyadmin:
+    container_name: epignosis-phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - mysql
+    networks:
+      - epignosis-network
+
+volumes:
+  mysql-data:
+
+networks:
+  epignosis-network:
+    driver: bridge
