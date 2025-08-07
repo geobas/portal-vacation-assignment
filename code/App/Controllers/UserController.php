@@ -13,6 +13,11 @@ class UserController
             header('Location: /');
             exit;
         }
+
+        if ($_SESSION['role'] !== 'manager') {
+            header('Location: /vacations');
+            exit;
+        }
     }
 
     public function index(): string
@@ -35,7 +40,7 @@ class UserController
         $user = User::findByEmail($data['email']);        
 
         if ($user) {
-            $_SESSION['error'] = 'Email already in use.';
+            $_SESSION['error'] = 'Email already in use';
             header('Location: /users/create');
             exit;
         }        

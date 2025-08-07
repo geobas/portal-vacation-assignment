@@ -31,7 +31,7 @@
             <td><?= htmlentities($user['employee_code']) ?></td>
             <td>
               <a href="/users/<?= htmlspecialchars($user['id']) ?>/edit">Edit</a>
-              <a href="#" class="text-danger" onclick="event.preventDefault(); if(confirm('Delete user?')) document.getElementById('delete-form-<?= $user['id'] ?>').submit();">Delete</a>
+              <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Delete user?')) document.getElementById('delete-form-<?= $user['id'] ?>').submit();">Delete</a>
                 <form id="delete-form-<?= $user['id'] ?>" action="/users/<?= htmlspecialchars($user['id']) ?>/delete" method="post" style="display: none;">
               </form>
             </td>

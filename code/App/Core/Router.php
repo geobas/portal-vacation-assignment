@@ -4,11 +4,10 @@ namespace App\Core;
 
 class Router
 {
-    private array $routes = [];
-    private Request $request;
-
-    public function __construct(Request $request)
-    {
+    public function __construct(
+        private Request $request,
+        private array $routes = [],
+    ){
         $this->request = $request;
     }
 

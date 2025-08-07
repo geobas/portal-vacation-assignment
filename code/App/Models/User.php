@@ -36,8 +36,8 @@ class User
 
     public static function create(array $data): void
     {
-        $stmt = Database::connect()->prepare("INSERT INTO users (username, email, employee_code, password) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$data['username'], $data['email'], $data['employee_code'], password_hash($data['password'], PASSWORD_DEFAULT)]);
+        $stmt = Database::connect()->prepare("INSERT INTO users (username, email, employee_code, password, created_at) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$data['username'], $data['email'], $data['employee_code'], password_hash($data['password'], PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
     }
 
     public static function update(int $id, array $data): void
@@ -45,11 +45,11 @@ class User
         $db = Database::connect();
 
         if (!empty($data['password'])) {
-            $stmt = $db->prepare("UPDATE users SET username = ?, email = ?, employee_code = ?, password = ? WHERE id = ?");
-            $stmt->execute([$data['username'], $data['email'], $data['employee_code'], password_hash($data['password'], PASSWORD_DEFAULT), $id]);
+            $stmt = $db->prepare("UPDATE users SET username = ?, email = ?, employee_code = ?, password = ?, updated_at = ? WHERE id = ?");
+            $stmt->execute([$data['username'], $data['email'], $data['employee_code'], password_hash($data['password'], PASSWORD_DEFAULT), date('Y-m-d H:i:s'), $id]);
         } else {
-            $stmt = $db->prepare("UPDATE users SET username = ?, email = ?, employee_code = ? WHERE id = ?");
-            $stmt->execute([$data['username'], $data['email'], $data['employee_code'], $id]);
+            $stmt = $db->prepare("UPDATE users SET username = ?, email = ?, employee_code = ?, updated_at = ? WHERE id = ?");
+            $stmt->execute([$data['username'], $data['email'], $data['employee_code'], date('Y-m-d H:i:s'), $id]);
         }
     }
 

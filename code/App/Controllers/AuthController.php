@@ -32,14 +32,23 @@ class AuthController
         }
 
         $_SESSION['user'] = $user['id'];
+        $_SESSION['role'] = $user['role'];
         unset($_SESSION['error']);
-        header('Location: /users');
+
+        if ($user['role'] === 'manager') {
+            header('Location: /users');
+        }
+
+        if ($user['role'] === 'user') {
+            header('Location: /vacations');
+        }
+        
         exit;
     }
 
     public function logout(): string
     {
-        unset($_SESSION['user']);
+        unset($_SESSION['user'], $_SESSION['role']);
         session_destroy();
         header('Location: /');
         exit;

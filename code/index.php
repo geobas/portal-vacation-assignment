@@ -8,6 +8,7 @@ use App\Core\Router;
 use App\Core\Request;
 use App\Controllers\AuthController;
 use App\Controllers\UserController;
+use App\Controllers\VacationController;
 
 $router = new Router(new Request());
 
@@ -23,5 +24,11 @@ $router->post('/users', [UserController::class, 'store']);
 $router->get('/users/{id}/edit', [UserController::class, 'edit']);
 $router->post('/users/{id}', [UserController::class, 'update']);
 $router->post('/users/{id}/delete', [UserController::class, 'destroy']);
+
+// Vacations
+$router->get('/vacations', [VacationController::class, 'index']);
+$router->get('/vacations/create', [VacationController::class, 'create']);
+$router->post('/vacations', [VacationController::class, 'store']);
+$router->post('/vacations/{id}/delete', [VacationController::class, 'destroy']);
 
 $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
