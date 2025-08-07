@@ -32,10 +32,10 @@
       <label for="end_date" class="form-label">End Date</label>
       <input type="text" class="form-control w-50" id="end_date" name="end_date" required>
       </div>
-      
+
       <div class="mb-3">
         <label for="reason" class="form-label">Reason</label>
-        <textarea class="form-control w-50" id="reason" name="reason" required></textarea>
+        <textarea class="form-control w-51 h-10" id="reason" name="reason" rows="5" required></textarea>
       </div>
 
       <button type="submit" class="btn btn-primary">Create</button>

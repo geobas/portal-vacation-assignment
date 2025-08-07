@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Core\Database;
@@ -13,7 +15,7 @@ class User
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function find(int $id): ?array
+    public static function find(string $id): ?array
     {
         $stmt = Database::connect()->prepare("SELECT * FROM users WHERE id = ?");
         $stmt->execute([$id]);
@@ -40,7 +42,7 @@ class User
         $stmt->execute([$data['username'], $data['email'], $data['employee_code'], password_hash($data['password'], PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
     }
 
-    public static function update(int $id, array $data): void
+    public static function update(string $id, array $data): void
     {
         $db = Database::connect();
 
@@ -53,7 +55,7 @@ class User
         }
     }
 
-    public static function delete(int $id): void
+    public static function delete(string $id): void
     {
         $stmt = Database::connect()->prepare("DELETE FROM users WHERE id = ?");
         $stmt->execute([$id]);

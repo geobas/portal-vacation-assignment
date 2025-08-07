@@ -9,12 +9,30 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container my-5">
-    <h2 class="mb-4">Vacations List</h2>
-    <a href="/vacations/create" class="btn btn-primary mb-3">
-      <i class="bi bi-person-plus"></i> Create Vacation
-    </a>
-     <table class="table table-striped table-bordered">
+    <div class="container my-5">
+      <h2 class="mb-4">Vacations List</h2>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+      <a href="/vacations/create" class="btn btn-primary mb-3">
+        <i class="bi bi-person-plus"></i> Create Vacation
+      </a>
+      <span class="text-muted fw-bold">
+        <span>
+          Username : <?= $username ?>
+        </span>
+        <br>
+        <span>
+          Total vacation days: <?= App\Models\Vacation::TOTAL_VACATION_DAYS ?>
+        </span>
+        <br>
+        <span>
+          Vacation days left: 
+          <?= App\Models\Vacation::TOTAL_VACATION_DAYS - array_reduce($vacations, function($temp, $v) {
+            return $temp + ((new DateTime($v['start_date']))->diff(new DateTime($v['end_date']))->days + 1);
+          }, 0); ?>
+        <span>
+      </span>
+    </div>
+    <table class="table table-striped table-bordered">
       <thead class="table-dark">
         <tr>
           <th>Date submitted</th>
@@ -34,7 +52,7 @@
             <td><?= htmlentities($vacation['reason']) ?></td>
             <td><?= htmlentities($vacation['status_name']) ?></td>
             <td>
-              <?php if ($vacation['status_id'] === 3): ?>
+              <?php if ($vacation['status_id'] === App\Enums\StatusEnum::PENDING->value): ?>
               <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Remove Vacation?')) document.getElementById('delete-form-<?= $vacation['id'] ?>').submit();">Remove</a>
                 <form id="delete-form-<?= $vacation['id'] ?>" action="/vacations/<?= htmlspecialchars($vacation['id']) ?>/delete" method="post" style="display: none;">
               </form>
