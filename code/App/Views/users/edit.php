@@ -44,6 +44,13 @@
 
       <button type="submit" class="btn btn-primary">Update</button>
       <a href="/users" class="btn btn-primary">Cancel</a>
+
+      <div class="mt-3 text-center">
+        <?php if (isset($_SESSION['error'])): ?>
+            <div class="text-center mb-4"><?= $_SESSION['error'] ?></div>
+        <?php endif; ?>
+        <?php unset($_SESSION['error']); ?>
+      </div>      
     </form>
   </div>
 

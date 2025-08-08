@@ -62,15 +62,14 @@ class UserController
     public function store(Request $request): string
     {
         $data = $request->getBody();
-        $user = User::findByEmail($data['email']);        
+        $this->validateUserData($data);
 
-        if ($user) {
-            $_SESSION['error'] = 'Email already in use';
+        if (isset($_SESSION['error'])) {
             header('Location: /users/create');
             exit;
-        }        
+        }
 
-        User::create($request->getBody());
+        User::create($data);
         header('Location: /users');
         exit;
     }
@@ -106,7 +105,15 @@ class UserController
      */
     public function update(Request $request, string $id): string
     {
-        User::update($id, $request->getBody());
+        $data = $request->getBody();
+        $this->validateUserData($data, (int) $id);
+
+        if (isset($_SESSION['error'])) {
+            header('Location: /users/' . $id . '/edit');
+            exit;
+        }
+
+        User::update($id, $data);
         header('Location: /users');
         exit;
     }
@@ -151,5 +158,28 @@ class UserController
         Vacation::reject($id);
         header('Location: /users');
         exit;
-    }    
+    }
+
+    /**
+     * Validate user data before creating or updating.
+     *
+     * @param array $data
+     * @return void
+     */
+    private function validateUserData(array $data, ?int $excludeUserId = null): void
+    {
+        if (strlen($data['employee_code']) < 7) {
+            $_SESSION['error'] = 'Employee code must be 7 characters long';
+        }
+
+        $existingEmailUser = User::findByEmail($data['email']);
+        if (!empty($existingEmailUser) && (int) $existingEmailUser['id'] !== $excludeUserId) {
+            $_SESSION['error'] = 'Email already in use';
+        }
+
+        $existingUsernameUser = User::findByUsername($data['username']);
+        if (!empty($existingUsernameUser) && (int) $existingUsernameUser['id'] !== $excludeUserId) {
+            $_SESSION['error'] = 'Username already in use';
+        }
+    }
 }
