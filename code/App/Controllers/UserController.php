@@ -11,6 +11,9 @@ use App\Exceptions\HttpException;
 
 class UserController
 {
+    /**
+     * @throws HttpException
+     */
     public function __construct()
     {
         if (!isset($_SESSION['user'])) {
@@ -23,6 +26,11 @@ class UserController
         }
     }
 
+    /**
+     * Display the list of users and their vacations.
+     *
+     * @return string
+     */
     public function index(): string
     {
         $users = User::all();
@@ -33,13 +41,24 @@ class UserController
         return ob_get_clean();
     }
 
+    /**
+     * Show the form to create a new user.
+     *
+     * @return string
+     */
     public function create(): string
     {
         ob_start();
         include __DIR__ . './../Views/users/create.php';
         return ob_get_clean();
     }
-
+    
+    /**
+     * Store a new user.
+     *
+     * @param Request $request
+     * @return string
+     */
     public function store(Request $request): string
     {
         $data = $request->getBody();
@@ -56,6 +75,13 @@ class UserController
         exit;
     }
 
+    /**
+     * Show the form to edit a user.
+     *
+     * @param Request $request
+     * @param string $id
+     * @return string
+     */
     public function edit(Request $request, string $id): string
     {
         $user = User::find($id);
@@ -71,6 +97,13 @@ class UserController
         return ob_get_clean();
     }
 
+    /**
+     * Update a user.
+     *
+     * @param Request $request
+     * @param string $id
+     * @return string
+     */
     public function update(Request $request, string $id): string
     {
         User::update($id, $request->getBody());
@@ -78,6 +111,13 @@ class UserController
         exit;
     }
 
+    /**
+     * Delete a user.
+     *
+     * @param Request $request
+     * @param string $id
+     * @return string
+     */
     public function destroy(Request $request, string $id): string
     {
         User::delete($id);
@@ -85,6 +125,13 @@ class UserController
         exit;
     }
 
+    /**
+     * Approve a vacation request.
+     *
+     * @param Request $request
+     * @param string $id
+     * @return string
+     */
     public function approve(Request $request, string $id): string
     {
         Vacation::approve($id);
@@ -92,6 +139,13 @@ class UserController
         exit;
     }
 
+    /**
+     * Reject a vacation request.
+     *
+     * @param Request $request
+     * @param string $id
+     * @return string
+     */
     public function reject(Request $request, string $id): string
     {
         Vacation::reject($id);

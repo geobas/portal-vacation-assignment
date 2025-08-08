@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css">
   <style>
     .login-container {
-      max-width: 500px;
+      max-width: 600px;
       margin: 80px auto;
       padding: 30px;
       background: #fff;
@@ -23,30 +23,42 @@
     <h2 class="mb-4">Vacation request</h2>
 
     <form action="/vacations" method="post" class="p-4 border rounded shadow-sm bg-light">
-      <div class="mb-3">
-      <label for="start_date" class="form-label">Start Date</label>
-      <input type="text" class="form-control w-50" id="start_date" name="start_date" required>
+      <div class="row mb-3 align-items-center">
+        <div class="col-sm-3">
+          <label for="start_date" class="col-form-label">Date from</label>
+        </div>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="start_date" name="start_date" required>
+        </div>
       </div>
 
-      <div class="mb-3">
-      <label for="end_date" class="form-label">End Date</label>
-      <input type="text" class="form-control w-50" id="end_date" name="end_date" required>
+      <div class="row mb-3 align-items-center">
+        <div class="col-sm-3">
+          <label for="end_date" class="col-form-label">Date to</label>
+        </div>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="end_date" name="end_date" required>
+        </div>
       </div>
 
-      <div class="mb-3">
-        <label for="reason" class="form-label">Reason</label>
-        <textarea class="form-control w-51 h-10" id="reason" name="reason" rows="5" required></textarea>
+      <div class="mb-3 d-flex align-items-start">
+        <label for="reason" class="form-label me-3 pt-2" style="min-width: 113px;">Reason</label>
+        <textarea class="form-control" id="reason" name="reason" rows="5" required></textarea>
       </div>
 
-      <button type="submit" class="btn btn-primary">Create</button>
-      <a href="/vacations" class="btn btn-primary">Cancel</a>
+      <div class="d-flex justify-content-between">
+        <div>
+          <button type="submit" class="btn btn-primary">Create</button>
+          <a href="/vacations" class="btn btn-secondary">Cancel</a>
+        </div>
+      </div>
 
-      <div class="mt-3 text-center">
-        <?php if (isset($_SESSION['error'])): ?>
-            <div class="text-center mb-4"><?= $_SESSION['error'] ?></div>
-        <?php endif; ?>
+      <?php if (isset($_SESSION['error'])): ?>
+        <div class="text-danger text-center mt-3">
+          <?= $_SESSION['error'] ?>
+        </div>
         <?php unset($_SESSION['error']); ?>
-      </div>
+      <?php endif; ?>
     </form>
   </div>
 

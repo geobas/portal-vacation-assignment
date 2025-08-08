@@ -15,6 +15,9 @@ class VacationController
 {
     private VacationRepositoryInterface $vacationRepo;
     
+    /**
+     * @throws HttpException
+     */
     public function __construct() {
         if (!isset($_SESSION['user'])) {
             throw new HttpException('Unauthorized', 401);
@@ -28,6 +31,11 @@ class VacationController
         $this->vacationRepo = new VacationRepository;
     }
 
+    /**
+     * Display the list of vacations for the logged-in user.
+     *
+     * @return string
+     */
     public function index(): string
     {
         $vacations = $this->vacationRepo->findByUserId($_SESSION['user']);
@@ -38,6 +46,11 @@ class VacationController
         return ob_get_clean();
     }
 
+    /**
+     * Show the form to create a new vacation.
+     *
+     * @return string
+     */
     public function create(): string
     {
         ob_start();
@@ -45,6 +58,12 @@ class VacationController
         return ob_get_clean();
     }
 
+    /**
+     * Store a new vacation.
+     *
+     * @param Request $request
+     * @return string
+     */
     public function store(Request $request): string
     {
         $data = $request->getBody();
@@ -78,6 +97,12 @@ class VacationController
         exit;
     }
 
+    /**
+     * Show the form to edit a vacation.
+     *
+     * @param string $id
+     * @return string
+     */
     public function destroy(Request $request, string $id): void
     {
         $this->vacationRepo->delete($id);

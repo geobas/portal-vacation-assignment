@@ -9,6 +9,11 @@ use App\Models\User;
 
 class AuthController
 {
+    /**
+     * Render the login form.
+     *
+     * @return string
+     */
     public function loginForm(): string
     {
         if (isset($_SESSION['user'])) {
@@ -21,6 +26,12 @@ class AuthController
         return ob_get_clean();
     }
 
+    /**
+     * Handle the login request.
+     *
+     * @param Request $request
+     * @return string
+     */
     public function login(Request $request): string
     {
         $data = $request->getBody();
