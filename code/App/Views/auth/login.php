@@ -26,6 +26,7 @@
     <div class="login-container">
       <h3 class="text-center mb-4">Login</h3>
       <form action="/login" method="post">
+        <?= csrf_field() ?>
         <div class="mb-3">
           <label for="email" class="form-label">Username</label>
           <input class="form-control" id="email" name="username" placeholder="Enter username">

@@ -1,16 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Users List</title>
-  <!-- Bootstrap CSS CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body>
+<?php
+$title = 'Users List';
+include __DIR__ . '/../partials/header.php';
+?>
   <div class="container my-5">
-    <h2 class="mb-4">User List</h2>
+    <h2 class="mb-4">Users List</h2>
     <a href="/users/create" class="btn btn-primary mb-3">
       <i class="bi bi-person-plus"></i> Create User
     </a>
@@ -42,7 +35,8 @@
               &nbsp;&nbsp;&nbsp;
               <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Delete user?')) document.getElementById('delete-form-<?= $user['id'] ?>').submit();">Delete</a>
                 <form id="delete-form-<?= $user['id'] ?>" action="/users/<?= htmlspecialchars($user['id']) ?>/delete" method="post" style="display: none;">
-              </form>
+                  <?= csrf_field() ?>
+                </form>
             </td>
           </tr>
         <?php endforeach ?>
@@ -78,13 +72,15 @@
               <?php if ($vacation['status_id'] !== App\Enums\StatusEnum::APPROVED->value): ?>
               <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Approve Vacation?')) document.getElementById('approve-form-<?= $vacation['id'] ?>').submit();">Approve</a>
                 <form id="approve-form-<?= $vacation['id'] ?>" action="users/vacations/<?= htmlspecialchars($vacation['id']) ?>/approve" method="post" style="display: none;">
-              </form>
+                  <?= csrf_field() ?>  
+                </form>
               <?php endif; ?>
               &nbsp;&nbsp;&nbsp;
               <?php if ($vacation['status_id'] !== App\Enums\StatusEnum::REJECTED->value): ?>
               <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Reject Vacation?')) document.getElementById('reject-form-<?= $vacation['id'] ?>').submit();">Reject</a>
                 <form id="reject-form-<?= $vacation['id'] ?>" action="users/vacations/<?= htmlspecialchars($vacation['id']) ?>/reject" method="post" style="display: none;">
-              </form>
+                  <?= csrf_field() ?>
+                </form>
               <?php endif; ?>
             </td>
           </tr>
@@ -95,8 +91,4 @@
 
     <a href="/logout">Sign Out</a>
   </div>
-
-  <!-- Bootstrap JS Bundle (optional for interactivity) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php include __DIR__ . '/../partials/footer.php'; ?>

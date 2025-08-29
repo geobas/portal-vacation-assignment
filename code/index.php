@@ -1,40 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 session_start();
 
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/App/Helpers/view.php';
+require_once __DIR__ . '/App/Helpers/response.php';
+require_once __DIR__ . '/App/Helpers/csrf.php';
 
 use App\Core\Router;
 use App\Core\Request;
+use App\Core\Container;
 use App\Controllers\AuthController;
 use App\Controllers\UserController;
 use App\Controllers\VacationController;
 use App\Exceptions\HttpException;
+use App\Contracts\VacationRepositoryInterface;
+use App\Contracts\UserRepositoryInterface;
+use App\Repositories\VacationRepository;
+use App\Repositories\UserRepository;
 
 try {
-    $router = new Router(new Request());
+    $container = new Container();
 
-    // Authentication
-    $router->get('/', [AuthController::class, 'loginForm']);
-    $router->post('/login', [AuthController::class, 'login']);
-    $router->get('/logout', [AuthController::class, 'logout']);
+    // Load bindings
+    $bindings = require __DIR__ . '/App/Core/Bindings.php';
+    $bindings($container);
 
-    // Managers
-    $router->get('/users', [UserController::class, 'index']);
-    $router->get('/users/create', [UserController::class, 'create']);
-    $router->post('/users', [UserController::class, 'store']);
-    $router->get('/users/{id}/edit', [UserController::class, 'edit']);
-    $router->post('/users/{id}', [UserController::class, 'update']);
-    $router->post('/users/{id}/delete', [UserController::class, 'destroy']);
-    $router->post('/users/vacations/{id}/approve', [UserController::class, 'approve']);
-    $router->post('/users/vacations/{id}/reject', [UserController::class, 'reject']);
+    // Initialize router
+    $router = new Router(new Request(), $container);
 
-    // Vacations
-    $router->get('/vacations', [VacationController::class, 'index']);
-    $router->get('/vacations/create', [VacationController::class, 'create']);
-    $router->post('/vacations', [VacationController::class, 'store']);
-    $router->post('/vacations/{id}/delete', [VacationController::class, 'destroy']);
+    // Load routes
+    $routes = require __DIR__ . '/App/Routes/web.php';
+    $routes($router);    
 
+    // Dispatch
     $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
 } catch (HttpException $e) {
     header('Location: /');

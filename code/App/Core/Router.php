@@ -8,10 +8,9 @@ class Router
 {
     public function __construct(
         private Request $request,
+        private Container $container,
         private array $routes = [],
-    ){
-        $this->request = $request;
-    }
+    ) {}
 
     public function get(string $uri, array $action)
     {
@@ -34,7 +33,7 @@ class Router
             if (preg_match($pattern, $uri, $matches)) {
                 $params = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
                 [$class, $methodName] = $action;
-                $controller = new $class();
+                $controller = $this->container->get($class);
                 echo $controller->$methodName($this->request, ...array_values($params));
                 return;
             }
