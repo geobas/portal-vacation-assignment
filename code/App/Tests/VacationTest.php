@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\Test;
-use App\Models\Vacation;
-use App\Models\User;
 use App\Core\Database;
 use App\Enums\StatusEnum;
+use App\Models\User;
+use App\Models\Vacation;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
 
 class VacationTest extends TestCase
 {
     private array $userData;
     private array $vacationData;
     protected static \PDO $db;
-    protected \PDO $connection;    
+    protected \PDO $connection;
 
     public static function setUpBeforeClass(): void
     {

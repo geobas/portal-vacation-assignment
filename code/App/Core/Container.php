@@ -45,7 +45,7 @@ class Container
 
         $constructor = $reflector->getConstructor();
         if (!$constructor) {
-            return new $class;
+            return new $class();
         }
 
         $params = [];

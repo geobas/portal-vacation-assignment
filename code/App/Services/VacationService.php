@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Core\Request;
-use App\Models\Vacation;
 use App\Contracts\VacationRepositoryInterface;
+use App\Models\Vacation;
 
 class VacationService
 {
     public function __construct(
         private VacationRepositoryInterface $vacationRepo
-    ) {}
+    ) {
+    }
 
     /**
      * Get vacations for a user.
@@ -61,7 +61,7 @@ class VacationService
     public function deleteVacation(string $id, array $data): void
     {
         validate_csrf($data['csrf_token'] ?? null);
-        
+
         $this->vacationRepo->delete($id);
     }
 }

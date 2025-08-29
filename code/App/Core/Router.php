@@ -10,7 +10,8 @@ class Router
         private Request $request,
         private Container $container,
         private array $routes = [],
-    ) {}
+    ) {
+    }
 
     public function get(string $uri, array $action)
     {
@@ -35,11 +36,12 @@ class Router
                 [$class, $methodName] = $action;
                 $controller = $this->container->get($class);
                 echo $controller->$methodName($this->request, ...array_values($params));
+
                 return;
             }
         }
 
         http_response_code(404);
-        echo "404 Not Found";
+        echo '404 Not Found';
     }
 }

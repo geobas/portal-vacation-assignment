@@ -12,7 +12,8 @@ class UserService
     public function __construct(
         private UserRepositoryInterface $userRepo,
         private VacationRepositoryInterface $vacationRepo
-    ) {}
+    ) {
+    }
 
     /**
      * Get all users and their vacations.
@@ -83,7 +84,7 @@ class UserService
     public function rejectVacation(string $id, array $data): void
     {
         validate_csrf($data['csrf_token'] ?? null);
-        
+
         $this->vacationRepo->reject($id);
     }
 
@@ -117,7 +118,7 @@ class UserService
         if (!preg_match('/[a-z]/', $data['password'])) {
             $_SESSION['error'] = 'Password must contain at least one lowercase letter.';
         }
-        
+
         if (!preg_match('/[0-9]/', $data['password'])) {
             $_SESSION['error'] = 'Password must contain at least one number.';
         }

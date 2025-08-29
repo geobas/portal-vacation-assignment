@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Contracts\UserRepositoryInterface;
 use App\Core\Request;
 use App\Exceptions\HttpException;
-use App\Contracts\UserRepositoryInterface;
 use App\Services\VacationService;
 
 class VacationController

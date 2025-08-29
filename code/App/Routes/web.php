@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-use App\Core\Router;
 use App\Controllers\AuthController;
 use App\Controllers\UserController;
 use App\Controllers\VacationController;
+use App\Core\Router;
 
 /**
  * Web Routes
- * 
+ *
  * @param Router $router
  * @return void
  */

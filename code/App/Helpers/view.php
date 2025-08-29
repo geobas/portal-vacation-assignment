@@ -20,5 +20,6 @@ function view(string $viewPath, array $data = []): string
     extract($data); // Extract variables to local scope
     ob_start();
     include $fullPath;
+
     return ob_get_clean();
 }

@@ -9,7 +9,7 @@ use Exception;
 class HttpException extends Exception
 {
     public function __construct(
-        string $message, 
+        string $message,
         public int $statusCode = 400
     ) {
         parent::__construct($message, $statusCode);

@@ -22,7 +22,7 @@ class Database
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
                 ]);
             } catch (PDOException $e) {
-                die("DB connection failed: " . $e->getMessage());
+                die('DB connection failed: ' . $e->getMessage());
             }
         }
 

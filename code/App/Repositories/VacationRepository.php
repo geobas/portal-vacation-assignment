@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\Vacation;
 use App\Contracts\VacationRepositoryInterface;
+use App\Models\Vacation;
 
 class VacationRepository implements VacationRepositoryInterface
 {

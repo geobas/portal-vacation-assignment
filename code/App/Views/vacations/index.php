@@ -19,8 +19,8 @@ include __DIR__ . '/../partials/header.php';
         <br>
         <span>
           Vacation days left: 
-          <?= App\Models\Vacation::TOTAL_VACATION_DAYS - array_reduce($vacations, function($temp, $v) {
-            return $temp + ((new DateTime($v['start_date']))->diff(new DateTime($v['end_date']))->days + 1);
+          <?= App\Models\Vacation::TOTAL_VACATION_DAYS - array_reduce($vacations, function ($temp, $v) {
+              return $temp + ((new DateTime($v['start_date']))->diff(new DateTime($v['end_date']))->days + 1);
           }, 0); ?>
         <span>
       </span>
@@ -50,7 +50,7 @@ include __DIR__ . '/../partials/header.php';
                 <form id="delete-form-<?= $vacation['id'] ?>" action="/vacations/<?= htmlspecialchars($vacation['id']) ?>/delete" method="post" style="display: none;">
                   <?= csrf_field() ?>
                 </form>
-              <? endif; ?>
+              <?php endif; ?>
             </td>
           </tr>
         <?php endforeach ?>

@@ -11,7 +11,8 @@ class AuthController
 {
     public function __construct(
         protected AuthService $authService
-    ) {}
+    ) {
+    }
 
     public function loginForm(): string
     {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Core\Container;
 use App\Contracts\UserRepositoryInterface;
 use App\Contracts\VacationRepositoryInterface;
+use App\Core\Container;
 use App\Repositories\UserRepository;
 use App\Repositories\VacationRepository;
 
@@ -15,6 +15,6 @@ use App\Repositories\VacationRepository;
  * @return void
  */
 return function (Container $container): void {
-    $container->set(UserRepositoryInterface::class, fn() => new UserRepository());
-    $container->set(VacationRepositoryInterface::class, fn() => new VacationRepository());
+    $container->set(UserRepositoryInterface::class, fn () => new UserRepository());
+    $container->set(VacationRepositoryInterface::class, fn () => new VacationRepository());
 };

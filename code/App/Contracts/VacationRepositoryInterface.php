@@ -56,7 +56,7 @@ interface VacationRepositoryInterface
      * @return array
      */
     public function exceedingDays(int $userId, string $startDate, string $endDate): array;
-    
+
     /**
      * Approve a vacation request.
      *
@@ -64,7 +64,7 @@ interface VacationRepositoryInterface
      * @return void
      */
     public function approve(string $id): void;
-    
+
     /**
      * Reject a vacation request.
      *

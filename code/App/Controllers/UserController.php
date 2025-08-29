@@ -28,6 +28,7 @@ class UserController
     public function index(): string
     {
         $data = $this->userService->getUsersAndVacations();
+
         return view('users/index.php', $data);
     }
 
