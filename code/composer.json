@@ -12,11 +12,13 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^12.3",
-        "friendsofphp/php-cs-fixer": "^3.86"
+        "friendsofphp/php-cs-fixer": "^3.86",
+        "phpstan/phpstan": "^2.1"
     },
     "scripts": {
         "test":"@php vendor/bin/phpunit",
         "fix": "vendor/bin/php-cs-fixer fix",
-        "fix:dry": "vendor/bin/php-cs-fixer fix --dry-run --diff"
+        "fix:dry": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "analyse": "vendor/bin/phpstan analyse --memory-limit=1G"
     }
 }

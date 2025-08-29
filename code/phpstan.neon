@@ -1,0 +1,19 @@
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon # optional, enables latest checks
+
+parameters:
+    level: 5
+    paths:
+        - App
+
+    # Composer autoloader
+    bootstrapFiles:
+        - vendor/autoload.php
+
+    # Ignore specific errors if needed
+    #ignoreErrors:
+    #    - '#Call to an undefined method#'
+
+    # Exclude directories (e.g., cache, logs)
+    excludePaths:
+        - App/Views
