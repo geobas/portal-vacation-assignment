@@ -107,24 +107,29 @@ class UserService
             $_SESSION['error'] = 'Username already in use';
         }
 
-        if (strlen($data['password']) < 8) {
-            $_SESSION['error'] = 'Password must be at least 8 characters long.';
-        }
+        if (!empty($data['password'])) {
+            $password = $data['password'];
+            $errors = [];
 
-        if (!preg_match('/[A-Z]/', $data['password'])) {
-            $_SESSION['error'] = 'Password must contain at least one uppercase letter.';
-        }
+            if (strlen($password) < 8) {
+                $errors[] = 'Password must be at least 8 characters long.';
+            }
+            if (!preg_match('/[A-Z]/', $password)) {
+                $errors[] = 'Password must contain at least one uppercase letter.';
+            }
+            if (!preg_match('/[a-z]/', $password)) {
+                $errors[] = 'Password must contain at least one lowercase letter.';
+            }
+            if (!preg_match('/[0-9]/', $password)) {
+                $errors[] = 'Password must contain at least one number.';
+            }
+            if (!preg_match('/[\W_]/', $password)) { // special character
+                $errors[] = 'Password must contain at least one special character.';
+            }
 
-        if (!preg_match('/[a-z]/', $data['password'])) {
-            $_SESSION['error'] = 'Password must contain at least one lowercase letter.';
-        }
-
-        if (!preg_match('/[0-9]/', $data['password'])) {
-            $_SESSION['error'] = 'Password must contain at least one number.';
-        }
-
-        if (!preg_match('/[\W_]/', $data['password'])) { // special character
-            $_SESSION['error'] = 'Password must contain at least one special character.';
+            if (!empty($errors)) {
+                $_SESSION['error'] = implode('<br>', $errors);
+            }
         }
     }
 
