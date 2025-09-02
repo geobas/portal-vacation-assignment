@@ -17,7 +17,7 @@ function view(string $viewPath, array $data = []): string
         throw new \Exception("View file not found: {$fullPath}");
     }
 
-    extract($data); // Extract variables to local scope
+    extract($data, EXTR_SKIP); // Extract variables to local scope
     ob_start();
     include $fullPath;
 
