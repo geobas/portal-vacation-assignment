@@ -4,109 +4,62 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Contracts\UserRepositoryInterface;
 use App\Core\Request;
-use App\Models\User;
-use App\Models\Vacation;
 use App\Exceptions\HttpException;
-use App\Contracts\VacationRepositoryInterface;
-use App\Repositories\VacationRepository;
+use App\Services\AuthService;
+use App\Services\VacationService;
 
 class VacationController
 {
-    private VacationRepositoryInterface $vacationRepo;
-    
     /**
      * @throws HttpException
      */
-    public function __construct() {
-        if (!isset($_SESSION['user'])) {
-            throw new HttpException('Unauthorized', 401);
-        }
-
-        if ($_SESSION['role'] !== 'user') {
-            header('Location: /users');
-            exit;
-        }
-
-        $this->vacationRepo = new VacationRepository;
+    public function __construct(
+        protected VacationService $vacationService,
+        protected UserRepositoryInterface $userRepo,
+        protected AuthService $authService,
+    ) {
+        $this->authService->requireRole('user');
     }
 
-    /**
-     * Display the list of vacations for the logged-in user.
-     *
-     * @return string
-     */
     public function index(): string
     {
-        $vacations = $this->vacationRepo->findByUserId($_SESSION['user']);
-        $username = User::find((string)$_SESSION['user'])['username'];
+        $userId = (string) $_SESSION['user'];
+        $vacations = $this->vacationService->getVacationsForUser($userId);
+        $username = $this->userRepo->find($userId)->username;
 
-        ob_start();
-        include __DIR__ . './../Views/vacations/index.php';
-        return ob_get_clean();
+        return view('vacations/index.php', [
+            'vacations' => $vacations,
+            'username' => $username
+        ]);
     }
 
-    /**
-     * Show the form to create a new vacation.
-     *
-     * @return string
-     */
     public function create(): string
     {
-        ob_start();
-        include __DIR__ . './../Views/vacations/create.php';
-        return ob_get_clean();
+        return view('vacations/create.php');
     }
 
-    /**
-     * Store a new vacation.
-     *
-     * @param Request $request
-     * @return string
-     */
-    public function store(Request $request): string
+    public function store(Request $request): void
     {
-        $data = $request->getBody();
+        $body = $request->getBody();
 
-        // check for valid date range
-        if (strtotime($data['start_date']) > strtotime($data['end_date'])) {
-            $_SESSION['error'] = 'Start date must be before end date';
-            header('Location: /vacations/create');
-            exit;
-        }
+        $data = [
+            'start_date'   => (string)($body['start_date'] ?? ''),
+            'end_date'     => (string)($body['end_date'] ?? ''),
+            'reason'       => (string)($body['reason'] ?? ''),
+            'csrf_token'   => $body['csrf_token'] ?? null,
+            'submitted_at' => $body['submitted_at'] ?? null,
+            'status_id'    => isset($body['status_id']) ? (int)$body['status_id'] : null,
+        ];
 
-        // check for overlapping dates
-        if ($this->vacationRepo->overlappingDates($_SESSION['user'], $data['start_date'], $data['end_date'])) {
-            $_SESSION['error'] = 'Vacation dates overlap with existing vacation';
-            header('Location: /vacations/create');
-            exit;
-        }
-
-        // check for exceeding vacation days
-        if (($result = $this->vacationRepo->exceedingDays($_SESSION['user'], $data['start_date'], $data['end_date']))['exceeding']) {
-            $_SESSION['error'] = sprintf(
-                'Limit for vacation days has been exceeded.<br>You have %d days left.',
-                Vacation::TOTAL_VACATION_DAYS - $result['usedDays']
-            );
-            header('Location: /vacations/create');
-            exit;
-        }
-
-        $this->vacationRepo->create($request->getBody());
-        header('Location: /vacations');
-        exit;
+        $this->vacationService->createVacation((string) $_SESSION['user'], $data);
+        redirect('/vacations');
     }
 
-    /**
-     * Show the form to edit a vacation.
-     *
-     * @param string $id
-     * @return string
-     */
     public function destroy(Request $request, string $id): void
     {
-        $this->vacationRepo->delete($id);
-        header('Location: /vacations');
-        exit;
+        $this->vacationService->deleteVacation($id, $request->getBody());
+        redirect('/vacations');
     }
 }

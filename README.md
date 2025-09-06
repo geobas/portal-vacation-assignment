@@ -23,8 +23,6 @@ Download packages
 ```
 composer install
 ```
-Go to http://localhost:8081 login with Username: user & Password: user and import epignosis.sql, that's located to 'code' directory, into 'epignosis' database
-
 Go to http://localhost:8080 login with Username: manager & Password: manager
 
 ### Execute tests

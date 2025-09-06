@@ -4,48 +4,53 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\Vacation;
 use App\Contracts\VacationRepositoryInterface;
+use App\Models\Vacation;
 
 class VacationRepository implements VacationRepositoryInterface
 {
+    public function __construct(
+        protected Vacation $vacation = new Vacation(),
+    ) {
+    }
+
     public function all(): array
     {
-        return Vacation::all();
+        return $this->vacation->all();
     }
 
     public function findByUserId(int $userId): array
     {
-        return Vacation::findByUserId($userId) ?? [];
+        return $this->vacation->findByUserId($userId) ?? [];
     }
 
     public function create(array $data): void
     {
-        Vacation::create($data);
+        $this->vacation->create($data);
     }
 
     public function delete(string $id): void
     {
-        Vacation::delete($id);
+        $this->vacation->delete($id);
     }
 
     public function overlappingDates(int $userId, string $startDate, string $endDate): bool
     {
-        return Vacation::overlappingDates($userId, $startDate, $endDate);
+        return $this->vacation->overlappingDates($userId, $startDate, $endDate);
     }
 
     public function exceedingDays(int $userId, string $startDate, string $endDate): array
     {
-        return Vacation::exceedingDays($userId, $startDate, $endDate);
+        return $this->vacation->exceedingDays($userId, $startDate, $endDate);
     }
 
     public function approve(string $id): void
     {
-        Vacation::approve($id);
+        $this->vacation->approve($id);
     }
 
     public function reject(string $id): void
     {
-        Vacation::reject($id);
+        $this->vacation->reject($id);
     }
 }

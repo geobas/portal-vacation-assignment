@@ -5,181 +5,84 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Core\Request;
-use App\Models\User;
-use App\Models\Vacation;
 use App\Exceptions\HttpException;
+use App\Services\AuthService;
+use App\Services\UserService;
 
 class UserController
 {
     /**
      * @throws HttpException
      */
-    public function __construct()
-    {
-        if (!isset($_SESSION['user'])) {
-            throw new HttpException('Unauthorized', 401);
-        }
-
-        if ($_SESSION['role'] !== 'manager') {
-            header('Location: /vacations');
-            exit;
-        }
+    public function __construct(
+        protected UserService $userService,
+        protected AuthService $authService,
+    ) {
+        $this->authService->requireRole('manager');
     }
 
-    /**
-     * Display the list of users and their vacations.
-     *
-     * @return string
-     */
     public function index(): string
     {
-        $users = User::all();
-        $vacations = Vacation::all();
+        $data = $this->userService->getUsersAndVacations();
 
-        ob_start();
-        include __DIR__ . './../Views/users/index.php';
-        return ob_get_clean();
+        return view('users/index.php', $data);
     }
 
-    /**
-     * Show the form to create a new user.
-     *
-     * @return string
-     */
     public function create(): string
     {
-        ob_start();
-        include __DIR__ . './../Views/users/create.php';
-        return ob_get_clean();
+        return view('users/create.php');
     }
-    
-    /**
-     * Store a new user.
-     *
-     * @param Request $request
-     * @return string
-     */
-    public function store(Request $request): string
+
+    public function store(Request $request): void
     {
+        /** @var array{
+         *     username: string,
+         *     email: string,
+         *     employee_code?: string|null,
+         *     password: string,
+         *     role?: string,
+         *     csrf_token?: string
+         * } $data
+         */
         $data = $request->getBody();
-        $this->validateUserData($data);
 
-        if (isset($_SESSION['error'])) {
-            header('Location: /users/create');
-            exit;
-        }
-
-        User::create($data);
-        header('Location: /users');
-        exit;
+        $this->userService->createUser($data);
+        redirect('/users');
     }
 
-    /**
-     * Show the form to edit a user.
-     *
-     * @param Request $request
-     * @param string $id
-     * @return string
-     */
     public function edit(Request $request, string $id): string
     {
-        $user = User::find($id);
+        $user = $this->userService->findUser($id);
 
         if (empty($user)) {
             $_SESSION['error'] = 'User not found';
-            header('Location: /users');
-            exit;
+            redirect('/users');
         }
 
-        ob_start();
-        include __DIR__ . './../Views/users/edit.php';
-        return ob_get_clean();
+        return view('users/edit.php', ['user' => $user]);
     }
 
-    /**
-     * Update a user.
-     *
-     * @param Request $request
-     * @param string $id
-     * @return string
-     */
-    public function update(Request $request, string $id): string
+    public function update(Request $request, string $id): void
     {
-        $data = $request->getBody();
-        $this->validateUserData($data, (int) $id);
-
-        if (isset($_SESSION['error'])) {
-            header('Location: /users/' . $id . '/edit');
-            exit;
-        }
-
-        User::update($id, $data);
-        header('Location: /users');
-        exit;
+        $this->userService->updateUser($id, $request->getBody());
+        redirect('/users');
     }
 
-    /**
-     * Delete a user.
-     *
-     * @param Request $request
-     * @param string $id
-     * @return string
-     */
-    public function destroy(Request $request, string $id): string
+    public function destroy(Request $request, string $id): void
     {
-        User::delete($id);
-        header('Location: /users');
-        exit;
+        $this->userService->deleteUser($id, $request->getBody());
+        redirect('/users');
     }
 
-    /**
-     * Approve a vacation request.
-     *
-     * @param Request $request
-     * @param string $id
-     * @return string
-     */
-    public function approve(Request $request, string $id): string
+    public function approve(Request $request, string $id): void
     {
-        Vacation::approve($id);
-        header('Location: /users');
-        exit;
+        $this->userService->approveVacation($id, $request->getBody());
+        redirect('/users');
     }
 
-    /**
-     * Reject a vacation request.
-     *
-     * @param Request $request
-     * @param string $id
-     * @return string
-     */
-    public function reject(Request $request, string $id): string
+    public function reject(Request $request, string $id): void
     {
-        Vacation::reject($id);
-        header('Location: /users');
-        exit;
-    }
-
-    /**
-     * Validate user data before creating or updating.
-     *
-     * @param array $data
-     * @return void
-     */
-    private function validateUserData(array $data, ?int $excludeUserId = null): void
-    {
-        if (strlen($data['employee_code']) < 7) {
-            $_SESSION['error'] = 'Employee code must be 7 characters long';
-        }
-
-        $existingEmailUser = User::findByEmail($data['email']);
-        if (!empty($existingEmailUser) && (int) $existingEmailUser['id'] !== $excludeUserId) {
-            $_SESSION['error'] = 'Email already in use';
-        }
-
-        $existingUsernameUser = User::findByUsername($data['username']);
-        if (!empty($existingUsernameUser) && (int) $existingUsernameUser['id'] !== $excludeUserId) {
-            $_SESSION['error'] = 'Username already in use';
-        }
+        $this->userService->rejectVacation($id, $request->getBody());
+        redirect('/users');
     }
 }

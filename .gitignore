@@ -1,2 +1,3 @@
 /code/vendor
 /code/.phpunit.result.cache
+/code/.php-cs-fixer.cache

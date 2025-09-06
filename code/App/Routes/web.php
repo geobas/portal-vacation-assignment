@@ -1,19 +1,19 @@
 <?php
 
-session_start();
+declare(strict_types=1);
 
-require_once __DIR__ . '/vendor/autoload.php';
-
-use App\Core\Router;
-use App\Core\Request;
 use App\Controllers\AuthController;
 use App\Controllers\UserController;
 use App\Controllers\VacationController;
-use App\Exceptions\HttpException;
+use App\Core\Router;
 
-try {
-    $router = new Router(new Request());
-
+/**
+ * Web Routes
+ *
+ * @param Router $router
+ * @return void
+ */
+return function (Router $router): void {
     // Authentication
     $router->get('/', [AuthController::class, 'loginForm']);
     $router->post('/login', [AuthController::class, 'login']);
@@ -34,9 +34,4 @@ try {
     $router->get('/vacations/create', [VacationController::class, 'create']);
     $router->post('/vacations', [VacationController::class, 'store']);
     $router->post('/vacations/{id}/delete', [VacationController::class, 'destroy']);
-
-    $router->dispatch($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
-} catch (HttpException $e) {
-    header('Location: /');
-    exit;    
-}
+};

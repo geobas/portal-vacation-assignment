@@ -23,6 +23,7 @@
     <h2 class="mb-4">Vacation request</h2>
 
     <form action="/vacations" method="post" class="p-4 border rounded shadow-sm bg-light">
+      <?= csrf_field() ?>
       <div class="row mb-3 align-items-center">
         <div class="col-sm-3">
           <label for="start_date" class="col-form-label">Date from</label>
