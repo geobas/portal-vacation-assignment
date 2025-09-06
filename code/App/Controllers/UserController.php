@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Core\Request;
 use App\Exceptions\HttpException;
+use App\Services\AuthService;
 use App\Services\UserService;
 
 class UserController
@@ -14,15 +15,10 @@ class UserController
      * @throws HttpException
      */
     public function __construct(
-        protected UserService $userService
+        protected UserService $userService,
+        protected AuthService $authService,
     ) {
-        if (!isset($_SESSION['user'])) {
-            throw new HttpException('Unauthorized', 401);
-        }
-
-        if ($_SESSION['role'] !== 'manager') {
-            redirect('/vacations');
-        }
+        $this->authService->requireRole('manager');
     }
 
     public function index(): string
@@ -39,7 +35,18 @@ class UserController
 
     public function store(Request $request): void
     {
-        $this->userService->createUser($request->getBody());
+        /** @var array{
+         *     username: string,
+         *     email: string,
+         *     employee_code?: string|null,
+         *     password: string,
+         *     role?: string,
+         *     csrf_token?: string
+         * } $data
+         */
+        $data = $request->getBody();
+
+        $this->userService->createUser($data);
         redirect('/users');
     }
 

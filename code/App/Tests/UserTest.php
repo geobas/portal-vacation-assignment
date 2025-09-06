@@ -11,9 +11,19 @@ use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {
+    /**
+     * @var array{
+     *   username: string,
+     *   email: string,
+     *   employee_code: string,
+     *   password: string,
+     *   role: string
+     * }
+     */
     private array $userData;
     protected static \PDO $db;
     protected \PDO $connection;
+    protected User $user;
 
     public static function setUpBeforeClass(): void
     {
@@ -23,6 +33,8 @@ class UserTest extends TestCase
     protected function setUp(): void
     {
         self::$db->beginTransaction();
+
+        $this->user = new User();
 
         $this->userData = [
             'username' => 'akis',
@@ -43,19 +55,19 @@ class UserTest extends TestCase
     #[Test]
     public function create_and_find_user(): void
     {
-        User::create($this->userData);
-        $users = User::all();
+        $this->user->create($this->userData);
+        $users = $this->user->all();
 
-        $user = User::findByEmail($this->userData['email']);
-        $this->assertSame($this->userData['username'], $user['username']);
-        $this->assertSame($this->userData['email'], $user['email']);
+        $user = $this->user->findByEmail($this->userData['email']);
+        $this->assertSame($this->userData['username'], $user->username);
+        $this->assertSame($this->userData['email'], $user->email);
     }
 
     #[Test]
     public function update_user(): void
     {
-        User::create($this->userData);
-        $user = User::findByEmail($this->userData['email']);
+        $this->user->create($this->userData);
+        $user = $this->user->findByEmail($this->userData['email']);
 
         $updatedData = [
             'username' => 'takis',
@@ -63,24 +75,24 @@ class UserTest extends TestCase
             'employee_code' => '7654321',
         ];
 
-        User::update((string) $user['id'], $updatedData);
+        $this->user->update((string) $user->id, $updatedData);
 
-        $updatedUser = User::find((string) $user['id']);
-        $this->assertSame($updatedData['username'], $updatedUser['username']);
-        $this->assertSame($updatedData['email'], $updatedUser['email']);
+        $updatedUser = $this->user->find((string) $user->id);
+        $this->assertSame($updatedData['username'], $updatedUser->username);
+        $this->assertSame($updatedData['email'], $updatedUser->email);
     }
 
     #[Test]
     public function delete_user(): void
     {
-        User::create($this->userData);
+        $this->user->create($this->userData);
 
-        $user = User::findByEmail($this->userData['email']);
+        $user = $this->user->findByEmail($this->userData['email']);
         $this->assertNotNull($user);
 
-        User::delete((string) $user['id']);
+        $this->user->delete((string) $user->id);
 
-        $deleted = User::findByEmail($this->userData['email']);
+        $deleted = $this->user->findByEmail($this->userData['email']);
         $this->assertNull($deleted);
     }
 }

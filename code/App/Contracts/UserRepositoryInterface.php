@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Contracts;
 
+use App\Models\User;
+
 interface UserRepositoryInterface
 {
     /**
      * Get all users.
      *
-     * @return array
+     * @return array<int, User>
      */
     public function all(): array;
 
@@ -17,30 +19,36 @@ interface UserRepositoryInterface
      * Find a user by ID.
      *
      * @param string $id
-     * @return array|null
+     * @return User|null
      */
-    public function find(string $id): ?array;
+    public function find(string $id): ?User;
 
     /**
      * Find a user by username.
      *
      * @param string $username
-     * @return array|null
+     * @return User|null
      */
-    public function findByUsername(string $username): ?array;
+    public function findByUsername(string $username): ?User;
 
     /**
      * Find a user by email.
      *
      * @param string $email
-     * @return array|null
+     * @return User|null
      */
-    public function findByEmail(string $email): ?array;
+    public function findByEmail(string $email): ?User;
 
     /**
      * Create a new user.
      *
-     * @param array $data
+     * @param array{
+     *     username: string,
+     *     email: string,
+     *     employee_code?: string|null,
+     *     password: string,
+     *     role?: string
+     * } $data
      */
     public function create(array $data): void;
 
@@ -48,7 +56,13 @@ interface UserRepositoryInterface
      * Update an existing user.
      *
      * @param string $id
-     * @param array $data
+     * @param array{
+     *     username?: string,
+     *     email?: string,
+     *     employee_code?: string|null,
+     *     password?: string,
+     *     role?: string
+     * } $data
      */
     public function update(string $id, array $data): void;
 

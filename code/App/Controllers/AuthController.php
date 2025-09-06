@@ -16,9 +16,8 @@ class AuthController
 
     public function loginForm(): string
     {
-        if (isset($_SESSION['user'])) {
-            redirect('/users');
-        }
+        // Delegate session check to AuthService
+        $this->authService->redirectIfLoggedIn();
 
         return view('auth/login.php');
     }

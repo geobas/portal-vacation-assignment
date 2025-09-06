@@ -9,38 +9,43 @@ use App\Models\User;
 
 class UserRepository implements UserRepositoryInterface
 {
+    public function __construct(
+        protected User $user = new User(),
+    ) {
+    }
+
     public function all(): array
     {
-        return User::all();
+        return $this->user->all();
     }
 
-    public function find(string $id): ?array
+    public function find(string $id): ?User
     {
-        return User::find($id) ?? [];
+        return $this->user->find($id);
     }
 
-    public function findByUsername(string $username): ?array
+    public function findByUsername(string $username): ?User
     {
-        return User::findByUsername($username);
+        return $this->user->findByUsername($username);
     }
 
-    public function findByEmail(string $email): ?array
+    public function findByEmail(string $email): ?User
     {
-        return User::findByEmail($email);
+        return $this->user->findByEmail($email);
     }
 
     public function create(array $data): void
     {
-        User::create($data);
+        $this->user->create($data);
     }
 
     public function update(string $id, array $data): void
     {
-        User::update($id, $data);
+        $this->user->update($id, $data);
     }
 
     public function delete(string $id): void
     {
-        User::delete($id);
+        $this->user->delete($id);
     }
 }

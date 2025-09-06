@@ -7,6 +7,7 @@ namespace App\Controllers;
 use App\Contracts\UserRepositoryInterface;
 use App\Core\Request;
 use App\Exceptions\HttpException;
+use App\Services\AuthService;
 use App\Services\VacationService;
 
 class VacationController
@@ -16,22 +17,17 @@ class VacationController
      */
     public function __construct(
         protected VacationService $vacationService,
-        protected UserRepositoryInterface $userRepo
+        protected UserRepositoryInterface $userRepo,
+        protected AuthService $authService,
     ) {
-        if (!isset($_SESSION['user'])) {
-            throw new HttpException('Unauthorized', 401);
-        }
-
-        if ($_SESSION['role'] !== 'user') {
-            redirect('/users');
-        }
+        $this->authService->requireRole('user');
     }
 
     public function index(): string
     {
         $userId = (string) $_SESSION['user'];
         $vacations = $this->vacationService->getVacationsForUser($userId);
-        $username = $this->userRepo->find($userId)['username'];
+        $username = $this->userRepo->find($userId)->username;
 
         return view('vacations/index.php', [
             'vacations' => $vacations,
@@ -46,7 +42,18 @@ class VacationController
 
     public function store(Request $request): void
     {
-        $this->vacationService->createVacation((string)$_SESSION['user'], $request->getBody());
+        $body = $request->getBody();
+
+        $data = [
+            'start_date'   => (string)($body['start_date'] ?? ''),
+            'end_date'     => (string)($body['end_date'] ?? ''),
+            'reason'       => (string)($body['reason'] ?? ''),
+            'csrf_token'   => $body['csrf_token'] ?? null,
+            'submitted_at' => $body['submitted_at'] ?? null,
+            'status_id'    => isset($body['status_id']) ? (int)$body['status_id'] : null,
+        ];
+
+        $this->vacationService->createVacation((string) $_SESSION['user'], $data);
         redirect('/vacations');
     }
 

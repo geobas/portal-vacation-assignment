@@ -5,21 +5,21 @@ include __DIR__ . '/../partials/header.php';
   <div class="container mt-5 login-container">
     <h2 class="mb-4">User properties</h2>
 
-    <form action="/users/<?= htmlspecialchars($user['id']) ?>" method="post" class="p-4 border rounded shadow-sm bg-light">
+    <form action="/users/<?= htmlspecialchars($user->id) ?>" method="post" class="p-4 border rounded shadow-sm bg-light">
       <?= csrf_field() ?>
       <div class="mb-3">
         <label for="name" class="form-label">Username</label>
-        <input type="text" class="form-control w-50" id="name" name="username" value="<?= htmlspecialchars($user['username']) ?>" required />
+        <input type="text" class="form-control w-50" id="name" name="username" value="<?= htmlspecialchars($user->username) ?>" required />
       </div>
 
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control w-50" id="email" name="email" value="<?= htmlspecialchars($user['email']) ?>" required />
+        <input type="email" class="form-control w-50" id="email" name="email" value="<?= htmlspecialchars($user->email) ?>" required />
       </div>
 
       <div class="mb-3">
         <label for="email" class="form-label">Employee code</label>
-        <input type="text" maxlength="7" class="form-control w-50" id="employee_code" name="employee_code" value="<?= htmlspecialchars($user['employee_code']) ?>" required oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,7);" />
+        <input type="text" maxlength="7" class="form-control w-50" id="employee_code" name="employee_code" value="<?= htmlspecialchars($user->employee_code) ?>" required oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,7);" />
       </div>
 
       <div class="mb-3">

@@ -6,6 +6,8 @@ namespace App\Services;
 
 use App\Contracts\UserRepositoryInterface;
 use App\Contracts\VacationRepositoryInterface;
+use App\Models\User;
+use App\Models\Vacation;
 
 class UserService
 {
@@ -17,6 +19,11 @@ class UserService
 
     /**
      * Get all users and their vacations.
+     *
+     * @return array{
+     *     users: array<int, User>,
+     *     vacations: array<int, Vacation>
+     * }
      */
     public function getUsersAndVacations(): array
     {
@@ -28,6 +35,15 @@ class UserService
 
     /**
      * Create a user after validation.
+     *
+     * @param array{
+     *     username: string,
+     *     email: string,
+     *     employee_code?: string|null,
+     *     password: string,
+     *     role?: string,
+     *     csrf_token?: string
+     * } $data
      */
     public function createUser(array $data): void
     {
@@ -44,6 +60,8 @@ class UserService
 
     /**
      * Update a user after validation.
+     *
+     * @param array<string, string> $data
      */
     public function updateUser(string $id, array $data): void
     {
@@ -60,6 +78,8 @@ class UserService
 
     /**
      * Delete a user.
+     *
+     * @param array<string, string> $data
      */
     public function deleteUser(string $id, array $data): void
     {
@@ -70,6 +90,8 @@ class UserService
 
     /**
      * Approve a vacation request.
+     *
+     * @param array<string, string> $data
      */
     public function approveVacation(string $id, array $data): void
     {
@@ -80,6 +102,8 @@ class UserService
 
     /**
      * Reject a vacation request.
+     *
+     * @param array<string, string> $data
      */
     public function rejectVacation(string $id, array $data): void
     {
@@ -90,6 +114,9 @@ class UserService
 
     /**
      * Validate user data before creating or updating.
+     *
+     * @param array<string, string> $data
+     * @param int|null $excludeUserId
      */
     private function validateUserData(array $data, ?int $excludeUserId = null): void
     {
@@ -98,12 +125,12 @@ class UserService
         }
 
         $existingEmailUser = $this->userRepo->findByEmail($data['email']);
-        if (!empty($existingEmailUser) && (int)$existingEmailUser['id'] !== $excludeUserId) {
+        if (!empty($existingEmailUser) && (int)$existingEmailUser->id !== $excludeUserId) {
             $_SESSION['error'] = 'Email already in use';
         }
 
         $existingUsernameUser = $this->userRepo->findByUsername($data['username']);
-        if (!empty($existingUsernameUser) && (int)$existingUsernameUser['id'] !== $excludeUserId) {
+        if (!empty($existingUsernameUser) && (int)$existingUsernameUser->id !== $excludeUserId) {
             $_SESSION['error'] = 'Username already in use';
         }
 
@@ -136,7 +163,7 @@ class UserService
     /**
      * Find a user by ID.
      */
-    public function findUser(string $id): ?array
+    public function findUser(string $id): ?User
     {
         return $this->userRepo->find($id);
     }

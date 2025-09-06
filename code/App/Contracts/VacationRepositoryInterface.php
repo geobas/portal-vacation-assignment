@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace App\Contracts;
 
+use App\Models\Vacation;
+
 interface VacationRepositoryInterface
 {
     /**
      * Retrieve all vacations.
      *
-     * @return array
+    * @return array<int, Vacation>
      */
     public function all(): array;
 
@@ -17,14 +19,21 @@ interface VacationRepositoryInterface
      * Find vacations by user ID.
      *
      * @param int $userId
-     * @return array
+     * @return array<int, Vacation>
      */
     public function findByUserId(int $userId): array;
 
     /**
      * Create a new vacation.
      *
-     * @param array $data
+     * @param array{
+     *     user_id: int,
+     *     start_date: string,
+     *     end_date: string,
+     *     reason: string,
+     *     submitted_at?: string|null,
+     *     status_id?: int
+     * } $data
      * @return void
      */
     public function create(array $data): void;
@@ -53,7 +62,10 @@ interface VacationRepositoryInterface
      * @param int $userId
      * @param string $startDate
      * @param string $endDate
-     * @return array
+     * @return array{
+     *     exceeding: bool,
+     *     usedDays: int
+     * }
      */
     public function exceedingDays(int $userId, string $startDate, string $endDate): array;
 

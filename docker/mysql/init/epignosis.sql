@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `epignosis`
 --
+CREATE DATABASE IF NOT EXISTS epignosis;
+USE epignosis;
 
 -- --------------------------------------------------------
 

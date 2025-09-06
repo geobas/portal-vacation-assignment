@@ -27,14 +27,14 @@ include __DIR__ . '/../partials/header.php';
       <tbody>
         <?php foreach ($users as $user): ?>
           <tr>
-            <td><?= htmlentities($user['username']) ?></td>
-            <td><?= htmlentities($user['email']) ?></td>
-            <td><?= htmlentities($user['employee_code']) ?></td>
+            <td><?= htmlentities($user->username) ?></td>
+            <td><?= htmlentities($user->email) ?></td>
+            <td><?= htmlentities($user->employee_code) ?></td>
             <td>
-              <a href="/users/<?= htmlspecialchars($user['id']) ?>/edit">Edit</a>
+              <a href="/users/<?= htmlspecialchars($user->id) ?>/edit">Edit</a>
               &nbsp;&nbsp;&nbsp;
-              <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Delete user?')) document.getElementById('delete-form-<?= $user['id'] ?>').submit();">Delete</a>
-                <form id="delete-form-<?= $user['id'] ?>" action="/users/<?= htmlspecialchars($user['id']) ?>/delete" method="post" style="display: none;">
+              <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Delete user?')) document.getElementById('delete-form-<?= $user->id ?>').submit();">Delete</a>
+                <form id="delete-form-<?= $user->id ?>" action="/users/<?= htmlspecialchars($user->id) ?>/delete" method="post" style="display: none;">
                   <?= csrf_field() ?>
                 </form>
             </td>
@@ -62,23 +62,23 @@ include __DIR__ . '/../partials/header.php';
       <tbody>
         <?php foreach ($vacations as $vacation): ?>
           <tr>
-            <td><?= htmlentities($vacation['user_name']) ?></td>
-            <td><?= htmlentities($vacation['submitted_at']) ?></td>
-            <td><?= date('Y/m/d', strtotime($vacation['start_date'])) ?> - <?= date('Y/m/d', strtotime($vacation['end_date']))  ?></td>
-            <td><?= (new DateTime($vacation['start_date']))->diff(new DateTime($vacation['end_date']))->days + 1; ?></td>
-            <td><?= htmlentities($vacation['reason']) ?></td>
-            <td><?= htmlentities($vacation['status_name']) ?></td>
+            <td><?= htmlentities($vacation->user->username) ?></td>
+            <td><?= htmlentities($vacation->submitted_at) ?></td>
+            <td><?= date('Y/m/d', strtotime($vacation->start_date)) ?> - <?= date('Y/m/d', strtotime($vacation->end_date))  ?></td>
+            <td><?= (new DateTime($vacation->start_date))->diff(new DateTime($vacation->end_date))->days + 1; ?></td>
+            <td><?= htmlentities($vacation->reason) ?></td>
+            <td><?= htmlentities($vacation->status->name) ?></td>
             <td>
-              <?php if ($vacation['status_id'] !== App\Enums\StatusEnum::APPROVED->value): ?>
-              <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Approve Vacation?')) document.getElementById('approve-form-<?= $vacation['id'] ?>').submit();">Approve</a>
-                <form id="approve-form-<?= $vacation['id'] ?>" action="users/vacations/<?= htmlspecialchars($vacation['id']) ?>/approve" method="post" style="display: none;">
+              <?php if ($vacation->status_id !== App\Enums\StatusEnum::APPROVED->value): ?>
+              <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Approve Vacation?')) document.getElementById('approve-form-<?= $vacation->id ?>').submit();">Approve</a>
+                <form id="approve-form-<?= $vacation->id ?>" action="users/vacations/<?= htmlspecialchars($vacation->id) ?>/approve" method="post" style="display: none;">
                   <?= csrf_field() ?>  
                 </form>
               <?php endif; ?>
               &nbsp;&nbsp;&nbsp;
-              <?php if ($vacation['status_id'] !== App\Enums\StatusEnum::REJECTED->value): ?>
-              <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Reject Vacation?')) document.getElementById('reject-form-<?= $vacation['id'] ?>').submit();">Reject</a>
-                <form id="reject-form-<?= $vacation['id'] ?>" action="users/vacations/<?= htmlspecialchars($vacation['id']) ?>/reject" method="post" style="display: none;">
+              <?php if ($vacation->status_id !== App\Enums\StatusEnum::REJECTED->value): ?>
+              <a href="javascript:void(0);" class="text-danger" onclick="event.preventDefault(); if(confirm('Reject Vacation?')) document.getElementById('reject-form-<?= $vacation->id ?>').submit();">Reject</a>
+                <form id="reject-form-<?= $vacation->id ?>" action="users/vacations/<?= htmlspecialchars($vacation->id) ?>/reject" method="post" style="display: none;">
                   <?= csrf_field() ?>
                 </form>
               <?php endif; ?>

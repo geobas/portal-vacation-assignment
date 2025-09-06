@@ -2,7 +2,7 @@ includes:
     - vendor/phpstan/phpstan/conf/bleedingEdge.neon # optional, enables latest checks
 
 parameters:
-    level: 5
+    level: 7
     paths:
         - App
 
@@ -10,10 +10,14 @@ parameters:
     bootstrapFiles:
         - vendor/autoload.php
 
-    # Ignore specific errors if needed
-    #ignoreErrors:
-    #    - '#Call to an undefined method#'
+    # Ignore specific errors
+    ignoreErrors:
+        - message: "#Unable to resolve the template type T in call to method App\\\\Core\\\\Container::get#"
+        - message: "#Method App\\\\Core\\\\Container::get\\(\\) should return T of object but returns object#"
+        - message: "#Parameter \\#1 \\$id of method App\\\\Core\\\\Container::get\\(\\) expects class-string<object>, string given#"
 
     # Exclude directories (e.g., cache, logs)
     excludePaths:
         - App/Views
+
+    reportUnmatchedIgnoredErrors: false

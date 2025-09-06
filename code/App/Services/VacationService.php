@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\VacationRepositoryInterface;
+use App\Enums\StatusEnum;
 use App\Models\Vacation;
 
 class VacationService
@@ -16,6 +17,9 @@ class VacationService
 
     /**
      * Get vacations for a user.
+     *
+     * @param string $userId
+     * @return array<int, Vacation>
      */
     public function getVacationsForUser(string $userId): array
     {
@@ -24,6 +28,16 @@ class VacationService
 
     /**
      * Create a vacation after all validations.
+     *
+     * @param string $userId
+    *  @param array{
+    *   start_date: string,
+    *   end_date: string,
+    *   reason: string,
+    *   csrf_token?: string,
+    *   submitted_at?: string|null,
+    *   status_id?: int
+    * } $data
      */
     public function createVacation(string $userId, array $data): void
     {
@@ -51,12 +65,21 @@ class VacationService
             redirect('/vacations/create');
         }
 
+        $repoData = array_merge($data, [
+            'user_id' => (int)$userId,
+            'submitted_at' => $data['submitted_at'] ?? date('Y-m-d H:i:s'),
+            'status_id' => $data['status_id'] ?? StatusEnum::PENDING->value,
+        ]);
+
         // finally, create vacation
-        $this->vacationRepo->create($data);
+        $this->vacationRepo->create($repoData);
     }
 
     /**
      * Delete a vacation.
+     *
+     * @param string $id
+     * @param array<string, string> $data
      */
     public function deleteVacation(string $id, array $data): void
     {
